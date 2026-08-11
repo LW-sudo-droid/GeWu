@@ -17,7 +17,7 @@ export type ExternalFilterTag = {
   onRemove: () => void
 }
 
-type Option = { label: string; count: number }
+type Option = { label: string; count: number; custom?: boolean }
 type InstitutionNode = { label: string; count: number; children?: Option[]; custom?: boolean }
 type InstitutionGroup = { label: string; count: number; children: InstitutionNode[] }
 
@@ -55,6 +55,7 @@ const pkuDepartments: Option[] = [
   { label: '城市与环境学院', count: 36 }, { label: '地球与空间科学学院', count: 34 }, { label: '遥感与地理信息系统研究所', count: 31 },
   { label: '北京未来基因诊断高精尖创新中心', count: 29 }, { label: '生命科学学院', count: 47 }, { label: '药学院', count: 33 },
   { label: '健康医疗大数据国家研究院', count: 26 }, { label: '护理学院', count: 18 },
+  { label: '其他', count: 8, custom: true },
 ]
 
 const institutionGroups: InstitutionGroup[] = [
@@ -73,7 +74,7 @@ const institutionGroups: InstitutionGroup[] = [
 
 function nodeKnownValues(node: InstitutionNode) {
   if (node.custom) return []
-  return node.children?.map((item) => item.label) ?? [node.label]
+  return node.children?.filter((item) => !item.custom).map((item) => item.label) ?? [node.label]
 }
 
 function groupKnownValues(group: InstitutionGroup) {
@@ -88,7 +89,7 @@ const emptyFilters = (initialSubject = '', initialPublisher = ''): CorpusFilterS
   subjects: initialSubject ? [initialSubject] : [],
   subSubjects: subjectChildren[initialSubject]?.map((item) => item.label) ?? [],
   corpusTypes: [],
-  institutions: initialPublisher === '北京大学' ? pkuDepartments.map((item) => item.label) : initialPublisher ? [initialPublisher] : [],
+  institutions: initialPublisher === '北京大学' ? pkuDepartments.filter((item) => !item.custom).map((item) => item.label) : initialPublisher ? [initialPublisher] : [],
   corpusSizes: [],
   storageSizes: [],
   openness: [],
@@ -223,7 +224,16 @@ export default function CorpusFilterSidebar({
     }
   }
 
-  const toggleInstitutionLeaf = (group: InstitutionGroup, node: InstitutionNode, value: string) => {
+  const toggleInstitutionLeaf = (group: InstitutionGroup, node: InstitutionNode, leaf: Option) => {
+    const value = leaf.label
+    const customKey = `${group.label}/${node.label}/${leaf.label}`
+    if (leaf.custom) {
+      const enabled = customInstitutionEnabled.includes(customKey)
+      const currentValue = customInstitutionValues[customKey]?.trim()
+      setCustomInstitutionEnabled((current) => enabled ? current.filter((item) => item !== customKey) : [...current, customKey])
+      if (enabled && currentValue) update('institutions', filters.institutions.filter((item) => item !== currentValue))
+      return
+    }
     if (filters.institutions.includes(value) && value === initialPublisher) onInitialFilterCleared?.('publisher')
     const next = toggleValue(filters.institutions, value)
     const nodeValues = nodeKnownValues(node)
@@ -234,8 +244,7 @@ export default function CorpusFilterSidebar({
     update('institutions', next)
   }
 
-  const updateCustomInstitution = (group: InstitutionGroup, value: string) => {
-    const nodeKey = `${group.label}/其他`
+  const updateCustomInstitution = (nodeKey: string, value: string) => {
     const previous = customInstitutionValues[nodeKey]?.trim()
     setCustomInstitutionValues((current) => ({ ...current, [nodeKey]: value }))
     setFilters((current) => {
@@ -358,19 +367,34 @@ export default function CorpusFilterSidebar({
                           <input
                             className="custom-institution-input"
                             value={customInstitutionValues[nodeKey] ?? ''}
-                            onChange={(event) => updateCustomInstitution(group, event.target.value)}
+                            onChange={(event) => updateCustomInstitution(nodeKey, event.target.value)}
                             placeholder={`请输入其他${group.label}名称`}
                             autoFocus
                           />
                         )}
                         {nodeOpen && node.children && (
                           <div className="institution-tree-children level-three-list">
-                            {(query ? matchingChildren : matchingChildren.slice(0, nodeVisible)).map((leaf) => (
-                              <InstitutionTreeRow
-                                key={`${nodeKey}/${leaf.label}`} label={leaf.label} count={leaf.count} level={3}
-                                checked={filters.institutions.includes(leaf.label)} onChange={() => toggleInstitutionLeaf(group, node, leaf.label)}
-                              />
-                            ))}
+                            {(query ? matchingChildren : matchingChildren.slice(0, nodeVisible)).map((leaf) => {
+                              const leafKey = `${nodeKey}/${leaf.label}`
+                              const leafSelected = leaf.custom ? customInstitutionEnabled.includes(leafKey) : filters.institutions.includes(leaf.label)
+                              return (
+                                <div className="institution-leaf" key={leafKey}>
+                                  <InstitutionTreeRow
+                                    label={leaf.label} count={leaf.count} level={3}
+                                    checked={leafSelected} onChange={() => toggleInstitutionLeaf(group, node, leaf)}
+                                  />
+                                  {leaf.custom && leafSelected && (
+                                    <input
+                                      className="custom-institution-input"
+                                      value={customInstitutionValues[leafKey] ?? ''}
+                                      onChange={(event) => updateCustomInstitution(leafKey, event.target.value)}
+                                      placeholder="请输入其他院系名称"
+                                      autoFocus
+                                    />
+                                  )}
+                                </div>
+                              )
+                            })}
                             {!query && <ExpandButton visible={nodeVisible} total={node.children.length} onExpand={() => setInstitutionNodeVisible((current) => ({ ...current, [nodeKey]: Math.min(nodeVisible + 5, node.children!.length) }))} onCollapse={() => setInstitutionNodeVisible((current) => ({ ...current, [nodeKey]: 5 }))} />}
                           </div>
                         )}
