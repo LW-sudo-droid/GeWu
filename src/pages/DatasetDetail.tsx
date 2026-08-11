@@ -228,7 +228,7 @@ export default function DatasetDetail() {
             <button type="button" className={liked ? 'is-active' : ''} onClick={handleLike}><ThumbsUp size={17} />点赞 <b>{likeCount}</b></button>
             <button type="button" className={favorite ? 'is-active' : ''} onClick={() => { toggleFavorite({ id: item.id, title: item.title }); notify(favorite ? '已取消收藏' : '已收藏，可在个人主页查看') }}><Star size={17} />{favorite ? '已收藏' : '收藏'}</button>
             <button type="button" onClick={handleShare}><Share2 size={17} />转发</button>
-            <button type="button" className="dataset-download-button" onClick={handleDownload}><Download size={17} />{canDownloadAll ? '下载全部数据' : openness === '部分公开' ? '下载公开数据' : '申请下载'}</button>
+            <button type="button" className="dataset-download-button" onClick={handleDownload}><Download size={17} />{canDownloadAll ? '下载数据' : openness === '部分公开' ? '下载公开数据' : '申请下载'}</button>
           </div>
         </section>
 
@@ -241,9 +241,6 @@ export default function DatasetDetail() {
             <div className="side-card-title"><ShieldCheck size={18} /><h2>权益信息</h2></div>
             <dl><div><dt>权益主体</dt><dd>{item.organization}</dd></div><div><dt>授权方式</dt><dd>{openness === '全部公开' ? '科研与教学开放许可' : '依申请授权使用'}</dd></div></dl>
             <a className="dataset-contact" href={`mailto:corpus@pku.edu.cn?subject=${encodeURIComponent(`申请使用：${item.title}`)}`}><Mail size={15} />联系作者申请权限</a>
-          </section>
-          <section className="dataset-permission-note">
-            <ShieldCheck size={18} /><div><strong>{isOwner ? '当前权限：最高管理员' : '当前权限：公众用户'}</strong><p>{isOwner ? '可编辑、管理成员并下载全部数据' : '可浏览信息、上传贡献并按开放范围下载'}</p></div>
           </section>
         </aside>
       </div>
