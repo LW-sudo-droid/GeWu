@@ -708,6 +708,219 @@ a { color: inherit; text-decoration: none; }
   .search-layout { grid-template-columns: 1fr; }
 }
 
+/* 2026-08-11 About page readability and partner identity refresh */
+.about-platform-page,
+.about-platform-page * {
+  font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+}
+.about-platform-page { font-size: 16px; }
+.about-platform-container { width: min(1480px, calc(100% - 64px)); }
+.about-introduction-section { padding: 76px 0 84px; }
+.about-platform-heading,
+.about-section-title,
+.about-section-title.is-centered,
+.about-dark-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.about-platform-heading h1,
+.about-section-title h2,
+.about-dark-heading h2 {
+  margin: 0;
+  font-size: clamp(38px, 3.3vw, 52px);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.about-section-title p,
+.about-dark-heading p {
+  max-width: 980px;
+  margin: 16px auto 0;
+  font-size: 17px;
+  line-height: 1.8;
+}
+.about-brand-row {
+  margin: 42px 0 36px;
+  justify-content: center;
+  text-align: left;
+}
+.about-brand-row strong { font-size: 34px; }
+.about-brand-row span { font-size: 16px; }
+.about-introduction-grid { gap: 40px; }
+.about-introduction-grid > article p {
+  margin-bottom: 22px;
+  font-size: 18px;
+  line-height: 2;
+}
+.about-relation-card { padding: 30px; gap: 24px; }
+.relation-flow > span,
+.relation-flow > strong { min-height: 58px; font-size: 15px; }
+.relation-flow > strong { font-size: 16px; }
+.relation-audience b { font-size: 15px; }
+.relation-audience p { font-size: 14px; line-height: 1.85; }
+
+.about-strategic-section { padding: 86px 0 94px; }
+.about-section-title { margin-bottom: 44px; }
+.strategic-card-grid { gap: 28px; }
+.strategic-card-grid article {
+  min-height: 560px;
+  padding: 44px 48px;
+  border-radius: 20px;
+}
+.strategy-card-label {
+  justify-content: flex-start;
+  gap: 13px;
+  font-size: inherit;
+}
+.strategy-card-label h3,
+.strategic-card-grid .strategy-card-label h3 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(28px, 2.3vw, 36px);
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+.strategy-challenge-card .strategy-card-label h3 { color: #244f60; }
+.strategic-card-grid p {
+  margin-top: 30px;
+  margin-bottom: 22px;
+  font-size: 16px;
+  line-height: 2;
+}
+.challenge-tags { margin: 28px 0; gap: 12px; }
+.challenge-tags span { padding: 13px 16px; font-size: 15px; }
+
+.about-philosophy-section { padding: 92px 0 102px; }
+.about-dark-heading h2 { color: #fff; }
+.philosophy-orbit-stage { width: min(1320px, 100%); height: 720px; margin-top: 42px; }
+.philosophy-core { width: 292px; height: 292px; }
+.philosophy-core strong { font-size: 21px; }
+.philosophy-core span { font-size: 15px; }
+.philosophy-core small { max-width: 220px; font-size: 13px; line-height: 1.75; }
+.philosophy-node { width: 300px; min-height: 190px; padding: 25px 27px; }
+.philosophy-node i { font-size: 13px; }
+.philosophy-node h3 { margin: 11px 0; font-size: 23px; }
+.philosophy-node p { font-size: 14px; line-height: 1.85; }
+.philosophy-node > span { margin-top: 14px; font-size: 12px; }
+.orbit-word { font-size: 12px; }
+
+.about-ecosystem-section {
+  padding: 92px 0 108px;
+  color: #dbeff5;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(27, 171, 208, .18), transparent 34%),
+    linear-gradient(145deg, #071c33 0%, #0a2e4a 52%, #0b3b56 100%);
+}
+.about-ecosystem-section .about-section-title h2 { color: #fff; }
+.about-ecosystem-section .about-section-title p { color: #a8c5d2; }
+.ecosystem-network-stage {
+  width: min(1400px, 100%);
+  height: 900px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(34, 184, 214, .2), transparent 28%),
+    linear-gradient(145deg, rgba(5, 31, 53, .86), rgba(8, 52, 77, .92));
+  border-color: rgba(82, 181, 207, .32);
+  border-radius: 24px;
+  box-shadow: inset 0 0 70px rgba(23, 119, 154, .08), 0 28px 60px rgba(0, 12, 27, .28);
+}
+.ecosystem-ring { top: 37%; }
+.ecosystem-core { top: 37%; width: 260px; height: 224px; }
+.ecosystem-core strong { margin-top: 12px; font-size: 21px; }
+.ecosystem-core span { margin-top: 8px; font-size: 13px; }
+.ecosystem-ring-copy { top: 37%; width: 650px; height: 650px; }
+.ecosystem-ring-copy span { font-size: 11px; }
+.ecosystem-ring-copy span:nth-child(1) { transform: rotate(0deg) translateX(310px) rotate(90deg); }
+.ecosystem-ring-copy span:nth-child(2) { transform: rotate(60deg) translateX(310px) rotate(90deg); }
+.ecosystem-ring-copy span:nth-child(3) { transform: rotate(120deg) translateX(310px) rotate(90deg); }
+.ecosystem-ring-copy span:nth-child(4) { transform: rotate(180deg) translateX(310px) rotate(90deg); }
+.ecosystem-ring-copy span:nth-child(5) { transform: rotate(240deg) translateX(310px) rotate(90deg); }
+.ecosystem-ring-copy span:nth-child(6) { transform: rotate(300deg) translateX(310px) rotate(90deg); }
+.ecosystem-group-node {
+  width: 220px;
+  min-height: 138px;
+  padding: 20px;
+  gap: 10px;
+  background: rgba(9, 50, 76, .88);
+  border-color: rgba(91, 180, 204, .38);
+  border-radius: 17px;
+}
+.ecosystem-group-node strong { font-size: 20px; }
+.ecosystem-group-node small { font-size: 13px; line-height: 1.65; }
+.group-university { left: 7%; top: 10%; }
+.group-research { right: 7%; top: 10%; }
+.group-enterprise { left: 9%; top: 43%; }
+.group-individual { right: 9%; top: 43%; }
+.ecosystem-member-panel {
+  left: 4%;
+  right: 4%;
+  bottom: 34px;
+  min-height: 230px;
+  padding: 28px 32px;
+  grid-template-columns: 250px 1fr;
+  gap: 30px;
+  background: rgba(7, 36, 58, .94);
+  border-color: rgba(91, 183, 205, .36);
+  border-radius: 18px;
+}
+.ecosystem-member-panel > div:first-child span { font-size: 16px; }
+.ecosystem-member-panel > div:first-child strong { font-size: 16px; line-height: 1.85; }
+.ecosystem-member-list { gap: 12px; }
+.ecosystem-member-list a,
+.ecosystem-member-list > span {
+  min-height: 68px;
+  padding: 9px 16px 9px 9px;
+  gap: 11px;
+  font-size: 14px;
+  border-radius: 11px;
+}
+.ecosystem-member-list a b { font-weight: 600; }
+.ecosystem-member-list img,
+.ecosystem-member-list i {
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  border-radius: 50%;
+}
+.ecosystem-member-list img {
+  padding: 4px;
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(164, 219, 230, .25);
+}
+.ecosystem-member-list i { font-size: 13px; }
+.ecosystem-member-list a.is-lead { min-height: 80px; padding-right: 19px; }
+.ecosystem-member-list a.is-lead img { width: 64px; height: 64px; flex-basis: 64px; }
+
+@media (max-width: 1040px) {
+  .ecosystem-network-stage { height: auto; }
+  .ecosystem-core { top: auto; }
+  .ecosystem-member-panel { min-height: 0; }
+}
+@media (max-width: 700px) {
+  .about-platform-container { width: calc(100% - 30px); }
+  .about-platform-heading h1,
+  .about-section-title h2,
+  .about-dark-heading h2 { font-size: 34px; }
+  .about-section-title p,
+  .about-dark-heading p { font-size: 15px; }
+  .about-brand-row { align-items: center; }
+  .about-brand-row strong { font-size: 25px; }
+  .about-brand-row span { font-size: 14px; }
+  .about-introduction-grid > article p { font-size: 16px; }
+  .strategic-card-grid article { padding: 30px 24px; }
+  .strategy-card-label h3,
+  .strategic-card-grid .strategy-card-label h3 { font-size: 27px; }
+  .strategic-card-grid p { font-size: 15px; }
+  .philosophy-node h3 { font-size: 21px; }
+  .philosophy-node p { font-size: 14px; }
+  .ecosystem-group-node { min-height: 120px; }
+  .ecosystem-member-panel { padding: 22px; }
+}
+
 /* 2026-08-09 visual direction: dark constellation + bright functional area */
 body {
   background: #061525;
