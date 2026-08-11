@@ -64,6 +64,32 @@ const fieldOptions: Array<{ value: SearchField; label: string }> = [
   { value: 'author', label: '作者姓名' },
 ]
 
+const searchableSubjects = ['数学', '物理', '化学', '天文', '地理', '生物']
+const searchableInstitutions = [
+  '天文学院-科维理天文与天体物理研究所', '北京未来基因诊断高精尖创新中心', '健康医疗大数据国家研究院',
+  '遥感与地理信息系统研究所', '化学与分子工程学院', '环境科学与工程学院', '地球与空间科学学院',
+  '北京科学智能研究院', '城市与环境学院', '数学科学学院', '生命科学学院', '物理学院', '药学院', '护理学院',
+  '北京大学', '清华大学', '复旦大学', '上海交通大学', '南京大学', '武汉大学', '厦门大学', '深势科技', '个人',
+]
+
+function findMappedValue(query: string, options: string[]) {
+  const normalized = query.trim()
+  if (!normalized) return ''
+  return options.find((option) => normalized === option) ?? options.find((option) => normalized.includes(option) || option.includes(normalized)) ?? ''
+}
+
+function mappedFiltersFromSearch(search: AppliedSearch) {
+  const searchableConditions = search.mode === 'simple'
+    ? [{ field: search.simpleField, value: search.simpleKeyword, logic: 'and' as LogicOperator }]
+    : search.conditions.filter((condition) => condition.logic !== 'not')
+  const subjectCondition = searchableConditions.find((condition) => condition.field === 'subject')
+  const publisherCondition = searchableConditions.find((condition) => condition.field === 'organization')
+  return {
+    subject: findMappedValue(subjectCondition?.value ?? '', searchableSubjects),
+    publisher: findMappedValue(publisherCondition?.value ?? '', searchableInstitutions),
+  }
+}
+
 const sortOptions: Array<{ value: SortKey; label: string }> = [
   { value: 'published_desc', label: '发布时间：由近到远' },
   { value: 'published_asc', label: '发布时间：由远到近' },
@@ -225,6 +251,7 @@ export default function CorpusSearch() {
   const [searchHistory, setSearchHistory] = useState<string[]>(loadSearchHistory)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [advancedModalOpen, setAdvancedModalOpen] = useState(false)
+  const [filterResetVersion, setFilterResetVersion] = useState(0)
 
   const saveSearchHistory = useCallback((keyword: string) => {
     const normalized = keyword.trim()
@@ -256,20 +283,38 @@ export default function CorpusSearch() {
 
   const handleSimpleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const nextApplied: AppliedSearch = { mode: 'simple', simpleField, simpleKeyword: simpleKeyword.trim(), conditions: [], startDate: '', endDate: '' }
+    const mapped = mappedFiltersFromSearch(nextApplied)
     const nextParams = new URLSearchParams()
     nextParams.set('search', 'simple')
     nextParams.set('field', simpleField)
     if (simpleKeyword.trim()) nextParams.set('q', simpleKeyword.trim())
+    if (mapped.subject) nextParams.set('domain', mapped.subject)
+    if (mapped.publisher) nextParams.set('publisher', mapped.publisher)
+    setAppliedSearch(nextApplied)
+    setSubjectFilter(mapped.subject)
+    setPublisherFilter(mapped.publisher)
+    setFacetFilters(emptyFacetFilters)
+    setFilterResetVersion((value) => value + 1)
     navigate(`/search/results?${nextParams.toString()}`)
   }
 
   const handleAdvancedSearch = () => {
     const activeConditions = conditions.map((condition) => ({ ...condition, value: condition.value.trim() })).filter((condition) => condition.value)
+    const nextApplied: AppliedSearch = { mode: 'advanced', simpleField: 'title', simpleKeyword: '', conditions: activeConditions, startDate, endDate }
+    const mapped = mappedFiltersFromSearch(nextApplied)
     const nextParams = new URLSearchParams()
     nextParams.set('search', 'advanced')
     if (activeConditions.length) nextParams.set('conditions', JSON.stringify(activeConditions))
     if (startDate) nextParams.set('startDate', startDate)
     if (endDate) nextParams.set('endDate', endDate)
+    if (mapped.subject) nextParams.set('domain', mapped.subject)
+    if (mapped.publisher) nextParams.set('publisher', mapped.publisher)
+    setAppliedSearch(nextApplied)
+    setSubjectFilter(mapped.subject)
+    setPublisherFilter(mapped.publisher)
+    setFacetFilters(emptyFacetFilters)
+    setFilterResetVersion((value) => value + 1)
     navigate(`/search/results?${nextParams.toString()}`)
   }
 
@@ -298,11 +343,21 @@ export default function CorpusSearch() {
 
   const applyResultSimpleSearch = (keyword: string) => {
     const normalized = keyword.trim()
-    setAppliedSearch({ mode: 'simple', simpleField: resultSearchField, simpleKeyword: normalized, conditions: [], startDate: '', endDate: '' })
+    const nextApplied: AppliedSearch = { mode: 'simple', simpleField: resultSearchField, simpleKeyword: normalized, conditions: [], startDate: '', endDate: '' }
+    const mapped = mappedFiltersFromSearch(nextApplied)
+    setAppliedSearch(nextApplied)
+    setSubjectFilter(mapped.subject)
+    setPublisherFilter(mapped.publisher)
+    setFacetFilters(emptyFacetFilters)
+    setFilterResetVersion((value) => value + 1)
     setResultSearchKeyword(normalized)
     setCurrentPage(1)
     saveSearchHistory(normalized)
-    syncSearchParams({ search: 'simple', field: resultSearchField, q: normalized || undefined, conditions: undefined, startDate: undefined, endDate: undefined })
+    syncSearchParams({
+      search: 'simple', field: resultSearchField, q: normalized || undefined,
+      domain: mapped.subject || undefined, publisher: mapped.publisher || undefined,
+      conditions: undefined, startDate: undefined, endDate: undefined,
+    })
     setHistoryOpen(false)
   }
 
@@ -323,10 +378,16 @@ export default function CorpusSearch() {
   const applyResultAdvancedSearch = () => {
     const activeConditions = conditions.map((condition) => ({ ...condition, value: condition.value.trim() })).filter((condition) => condition.value)
     const nextApplied: AppliedSearch = { mode: 'advanced', simpleField: 'title', simpleKeyword: '', conditions: activeConditions, startDate, endDate }
+    const mapped = mappedFiltersFromSearch(nextApplied)
     setAppliedSearch(nextApplied)
+    setSubjectFilter(mapped.subject)
+    setPublisherFilter(mapped.publisher)
+    setFacetFilters(emptyFacetFilters)
+    setFilterResetVersion((value) => value + 1)
     setCurrentPage(1)
     syncSearchParams({
       search: 'advanced', field: undefined, q: undefined,
+      domain: mapped.subject || undefined, publisher: mapped.publisher || undefined,
       conditions: activeConditions.length ? JSON.stringify(activeConditions) : undefined,
       startDate: startDate || undefined, endDate: endDate || undefined,
     })
@@ -439,7 +500,23 @@ export default function CorpusSearch() {
     setPublisherFilter('')
     setSubjectFilter('')
     setCurrentPage(1)
+    setFacetFilters(emptyFacetFilters)
+    setFilterResetVersion((value) => value + 1)
     syncSearchParams({ publisher: undefined, domain: undefined, q: undefined, field: undefined, search: undefined })
+  }
+
+  const clearMappedSearchFilter = () => {
+    setAppliedSearch(emptyAppliedSearch())
+    setPublisherFilter('')
+    setSubjectFilter('')
+    setResultSearchKeyword('')
+    setFacetFilters(emptyFacetFilters)
+    setCurrentPage(1)
+    setFilterResetVersion((value) => value + 1)
+    syncSearchParams({
+      publisher: undefined, domain: undefined, q: undefined, field: undefined, search: undefined,
+      conditions: undefined, startDate: undefined, endDate: undefined,
+    })
   }
 
   return (
@@ -544,11 +621,13 @@ export default function CorpusSearch() {
         <div className={`catalog-results-layout${isResultsPage ? '' : ' is-standalone'}`}>
           {isResultsPage && (
           <CorpusFilterSidebar
+            key={`${filterResetVersion}-${subjectFilter}-${publisherFilter}`}
             initialSubject={subjectFilter}
             initialPublisher={publisherFilter}
             externalTags={externalFilterTags}
             onChange={handleFacetChange}
             onResetExternal={resetAllResultFilters}
+            onInitialFilterCleared={clearMappedSearchFilter}
           />
           )}
           <div className="catalog-results-main">
@@ -607,9 +686,7 @@ export default function CorpusSearch() {
           <div className="catalog-card-grid">
             {visibleRecords.map((item) => {
               const displayMeta = recordDisplayMeta(item)
-              const cardTarget = isResultsPage
-                ? `/search/datasets/${item.id}`
-                : `/search/results?search=simple&field=title&q=${encodeURIComponent(item.title)}`
+              const cardTarget = `/search/datasets/${item.id}`
               return (
               <Link className="catalog-corpus-card" to={cardTarget} key={item.id}>
                 <div className="catalog-card-topline">

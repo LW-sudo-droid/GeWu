@@ -80,6 +80,10 @@ function groupKnownValues(group: InstitutionGroup) {
   return group.children.flatMap(nodeKnownValues)
 }
 
+function initialInstitutionGroup(initialPublisher: string) {
+  return institutionGroups.find((group) => group.label === initialPublisher || group.children.some((node) => node.label === initialPublisher || node.children?.some((child) => child.label === initialPublisher)))?.label ?? ''
+}
+
 const emptyFilters = (initialSubject = '', initialPublisher = ''): CorpusFilterState => ({
   subjects: initialSubject ? [initialSubject] : [],
   subSubjects: subjectChildren[initialSubject]?.map((item) => item.label) ?? [],
@@ -133,19 +137,27 @@ export default function CorpusFilterSidebar({
   externalTags,
   onChange,
   onResetExternal,
+  onInitialFilterCleared,
 }: {
   initialSubject?: string
   initialPublisher?: string
   externalTags: ExternalFilterTag[]
   onChange: (filters: CorpusFilterState) => void
   onResetExternal: () => void
+  onInitialFilterCleared?: (type: 'subject' | 'publisher') => void
 }) {
   const [filters, setFilters] = useState(() => emptyFilters(initialSubject, initialPublisher))
   const [subjectVisible, setSubjectVisible] = useState(5)
   const [institutionQuery, setInstitutionQuery] = useState('')
-  const [openInstitutionGroups, setOpenInstitutionGroups] = useState<string[]>([])
+  const [openInstitutionGroups, setOpenInstitutionGroups] = useState<string[]>(() => {
+    const group = initialInstitutionGroup(initialPublisher)
+    return group ? [group] : []
+  })
   const [institutionVisible, setInstitutionVisible] = useState<Record<string, number>>({ 高校: 5, 企业: 5, 新型研发机构: 5 })
-  const [openInstitutionNodes, setOpenInstitutionNodes] = useState<string[]>([])
+  const [openInstitutionNodes, setOpenInstitutionNodes] = useState<string[]>(() => {
+    if (initialPublisher === '北京大学' || pkuDepartments.some((item) => item.label === initialPublisher)) return ['高校/北京大学']
+    return []
+  })
   const [institutionNodeVisible, setInstitutionNodeVisible] = useState<Record<string, number>>({ '高校/北京大学': 5 })
   const [customInstitutionEnabled, setCustomInstitutionEnabled] = useState<string[]>([])
   const [customInstitutionValues, setCustomInstitutionValues] = useState<Record<string, string>>({})
@@ -158,6 +170,7 @@ export default function CorpusFilterSidebar({
 
   const toggleSubject = (subject: string) => {
     const selected = filters.subjects.includes(subject)
+    if (selected && subject === initialSubject) onInitialFilterCleared?.('subject')
     const children = subjectChildren[subject]?.map((item) => item.label) ?? []
     setFilters((current) => ({
       ...current,
@@ -180,6 +193,7 @@ export default function CorpusFilterSidebar({
   const toggleInstitutionGroup = (group: InstitutionGroup) => {
     const knownValues = groupKnownValues(group)
     if (knownValues.length === 0) {
+      if (filters.institutions.includes(group.label) && group.label === initialPublisher) onInitialFilterCleared?.('publisher')
       update('institutions', toggleValue(filters.institutions, group.label))
       return
     }
@@ -202,6 +216,7 @@ export default function CorpusFilterSidebar({
     }
     const values = nodeKnownValues(node)
     const allSelected = values.every((value) => filters.institutions.includes(value))
+    if (allSelected && node.label === initialPublisher) onInitialFilterCleared?.('publisher')
     update('institutions', allSelected ? filters.institutions.filter((item) => !values.includes(item)) : Array.from(new Set([...filters.institutions, ...values])))
     if (node.children?.length) {
       setOpenInstitutionNodes((current) => allSelected ? current.filter((item) => item !== nodeKey) : Array.from(new Set([...current, nodeKey])))
@@ -209,6 +224,7 @@ export default function CorpusFilterSidebar({
   }
 
   const toggleInstitutionLeaf = (group: InstitutionGroup, node: InstitutionNode, value: string) => {
+    if (filters.institutions.includes(value) && value === initialPublisher) onInitialFilterCleared?.('publisher')
     const next = toggleValue(filters.institutions, value)
     const nodeValues = nodeKnownValues(node)
     const groupValues = groupKnownValues(group)
@@ -254,6 +270,10 @@ export default function CorpusFilterSidebar({
   const totalApplied = externalTags.length + internalTags.length
 
   const removeInternalTag = (group: keyof CorpusFilterState, value: string) => {
+    if (group === 'subjects' && value === initialSubject) onInitialFilterCleared?.('subject')
+    if (group === 'institutions' && (value === initialPublisher || initialPublisher === '北京大学' && pkuDepartments.some((item) => item.label === value))) {
+      onInitialFilterCleared?.('publisher')
+    }
     update(group, filters[group].filter((item) => item !== value))
     if (group === 'institutions') {
       const customEntry = Object.entries(customInstitutionValues).find(([, customValue]) => customValue.trim() === value)
