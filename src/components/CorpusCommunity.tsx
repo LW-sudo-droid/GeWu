@@ -220,7 +220,6 @@ export default function CorpusCommunity() {
     <section className="corpus-community-section" aria-labelledby="community-title">
       <div className="community-section-inner">
         <header className="community-section-heading">
-          <span>SCIENTIFIC CORPUS COMMUNITY</span>
           <h2 id="community-title">数据社区 · 共建共享</h2>
           <p>连接高校、企业、新型研发机构和个人贡献者，展现全国科学语料共建图景。</p>
         </header>
@@ -299,7 +298,7 @@ export default function CorpusCommunity() {
           <aside className="community-summary-panel" aria-live="polite">
             <div className="community-summary-heading">
               <div>
-                <span>{activeProvince ? 'PROVINCIAL SNAPSHOT' : 'NATIONAL SNAPSHOT'}</span>
+                <span>{activeProvince ? '省级数据' : '全国数据'}</span>
                 <h3>{activeProvince ? `${activeProvince}汇总` : '全国汇总'}</h3>
               </div>
             </div>

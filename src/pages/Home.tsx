@@ -1,4 +1,4 @@
-import { ArrowRight, BadgeCheck, BookOpen, Boxes, Braces, BrainCircuit, Database, FileStack, LibraryBig, ListFilter, Network, ScanSearch, Search, Tags, UploadCloud, Waypoints } from 'lucide-react'
+import { BadgeCheck, BookOpen, Boxes, Braces, BrainCircuit, Database, FileStack, LibraryBig, ListFilter, Network, ScanSearch, Search, Tags, UploadCloud, Waypoints } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { useApp } from '../context/app-context'
 import CorpusCommunity from '../components/CorpusCommunity'
@@ -7,7 +7,7 @@ import QualityCorpusDiscovery from '../components/QualityCorpusDiscovery'
 
 const metrics = [
   { value: '92亿条', label: '语料条数' },
-  { value: '900个', label: '语料集' },
+  { value: '900个', label: '语料库' },
   { value: '38PB', label: '语料规模' },
   { value: '400万', label: '服务用户' },
 ]
@@ -40,14 +40,13 @@ export default function Home() {
         <div className="cosmic-arc cosmic-arc-two" aria-hidden="true" />
         <div className="hero-grid hero-grid-redesign">
           <div className="hero-copy">
-            <span className="hero-kicker"><Database size={16} />开放汇聚 · 协同建设 · 共享使用</span>
             <h1>高质量科学语料<br /><em>共建共享平台</em></h1>
-            <p>汇聚高校、企业、新型研发机构与个人建设成果，连接语料贡献者与使用者，服务科研创新、教育教学与模型训练。</p>
+            <p>汇聚高校、企业、新型研发机构与个人建设成果，连接语料贡献者与使用者，服务科研创新、教育教学与模型训练</p>
             <div className="hero-actions">
               <button className="primary-action hero-button" type="button" onClick={handleUpload}>
-                <UploadCloud size={18} />语料上传<ArrowRight size={16} />
+                <UploadCloud size={18} />语料上传
               </button>
-              <Link className="secondary-action" to="/search"><Search size={18} />浏览语料</Link>
+              <Link className="secondary-action" to="/search/results"><Search size={18} />浏览语料</Link>
             </div>
             <div className="hero-metrics">
               {metrics.map((item) => (
@@ -59,7 +58,6 @@ export default function Home() {
 
           <section className="hero-evolution-panel" aria-labelledby="evolution-title">
             <div className="hero-evolution-heading">
-              <span>CORE CONCEPT</span>
               <h2 id="evolution-title">“数据-工具-人才-模型”共进化</h2>
             </div>
 
@@ -90,7 +88,6 @@ export default function Home() {
 
       <section className="corpus-features-section">
         <div className="features-section-heading">
-          <span>PLATFORM CORPUS FEATURES</span>
           <h2>平台语料特色</h2>
         </div>
 
@@ -187,7 +184,7 @@ export default function Home() {
                     <span><Braces size={18} />结构化数据</span>
                   </div>
                   <div className="storage-mini-arrow" aria-hidden="true" />
-                  <div className="ai-database"><Database size={24} /><span>AI数据库</span></div>
+                  <div className="ai-database"><Database size={24} /><span>人工智能数据库</span></div>
                   <div className="storage-mini-arrow" aria-hidden="true" />
                   <div className="corpus-library"><LibraryBig size={18} /><strong>多模态语料库</strong></div>
                 </div>

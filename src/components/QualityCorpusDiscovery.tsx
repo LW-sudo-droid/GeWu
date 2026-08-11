@@ -55,8 +55,8 @@ const corpusItems: CorpusItem[] = [
     publishedAt: '2026-06-26', views: 59, downloads: 0,
   },
   {
-    id: 'ds-07', title: '海工装备PVD防护涂层专题语料', organization: '北京大学材料科学与工程学院', domain: '物理', type: '知识语料', openness: '依申请开放',
-    summary: '提取PVD防护涂层工艺、成分、结构与性能关键参数，支持多维标注。',
+    id: 'ds-07', title: '海工装备物理气相沉积防护涂层专题语料', organization: '北京大学材料科学与工程学院', domain: '物理', type: '知识语料', openness: '依申请开放',
+    summary: '提取物理气相沉积防护涂层工艺、成分、结构与性能关键参数，支持多维标注。',
     publishedAt: '2026-07-14', views: 63, downloads: 0,
   },
   {
@@ -75,7 +75,7 @@ const corpusItems: CorpusItem[] = [
     publishedAt: '2026-06-26', views: 150, downloads: 904,
   },
   {
-    id: 'ds-13', title: '中国典型城市高分辨率RGB影像语料', organization: '北京大学地球与空间科学学院', domain: '地理', type: '基础语料', openness: '开放共享',
+    id: 'ds-13', title: '中国典型城市高分辨率三通道影像语料', organization: '北京大学地球与空间科学学院', domain: '地理', type: '基础语料', openness: '开放共享',
     summary: '提供典型城市核心城区亚米级影像块，支持高分辨率重建与视觉训练。',
     publishedAt: '2026-05-18', views: 312, downloads: 45,
   },
@@ -112,7 +112,6 @@ export default function QualityCorpusDiscovery() {
     <section className="quality-discovery-section" aria-labelledby="quality-discovery-title">
       <div className="quality-discovery-inner">
         <header className="quality-discovery-heading">
-          <span>QUALITY CORPUS DISCOVERY</span>
           <h2 id="quality-discovery-title">发现优质语料</h2>
         </header>
 
@@ -133,7 +132,7 @@ export default function QualityCorpusDiscovery() {
               </button>
             ))}
           </div>
-          <Link className="discovery-more-link" to={`/search?sort=${activeTab}`}>
+          <Link className="discovery-more-link" to={`/search/results?sort=${activeTab}`}>
             查看更多 <ArrowRight size={15} />
           </Link>
         </div>

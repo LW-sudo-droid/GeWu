@@ -16,6 +16,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/panorama" element={<Panorama />} />
         <Route path="/search" element={<CorpusSearch />} />
+        <Route path="/search/results" element={<CorpusSearch />} />
         <Route path="/search/datasets/:id" element={<DatasetDetail />} />
         <Route path="/upload" element={<CorpusUpload />} />
         <Route path="/profile" element={<Profile />} />

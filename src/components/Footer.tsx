@@ -11,7 +11,7 @@ export default function Footer() {
           <dl>
             <div><dt>主管单位</dt><dd>北京大学</dd></div>
             <div><dt>主建单位</dt><dd>北京大学图书馆<br />北京大学计算中心</dd></div>
-            <div><dt>合作单位</dt><dd>北京科学智能研究院（AISI）</dd></div>
+            <div><dt>合作单位</dt><dd>北京科学智能研究院</dd></div>
           </dl>
         </section>
 

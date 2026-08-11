@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { ArrowLeft, Check, Eye, EyeOff, LockKeyhole, Mail, MessageSquareText, ShieldCheck, X } from 'lucide-react'
 import { useApp } from '../context/app-context'
+import LogoMark from './LogoMark'
 
 type LoginMode = 'password' | 'sms'
 type ViewMode = 'login' | 'register'
@@ -108,7 +109,13 @@ export default function AuthDialog() {
         </button>
 
         <aside className="auth-brand-panel">
-          <img src={`${import.meta.env.BASE_URL}images/auth-brand-visual.png`} alt="AI for Science，聚集高质量科学语料，服务教学与科研创新" />
+          <div className="auth-brand-copy">
+            <h2>AI for Science</h2>
+            <p>聚集高质量科学语料，服务教学与科研创新</p>
+          </div>
+          <div className="auth-visual" role="img" aria-label="格物科学语料库标志">
+            <LogoMark size={330} className="auth-logo-mark" />
+          </div>
         </aside>
 
         <div className="auth-form-panel">
@@ -119,7 +126,7 @@ export default function AuthDialog() {
           )}
           <div className="auth-title-group">
             <h1 id="auth-title">{view === 'login' ? '身份认证' : '用户注册'}</h1>
-            {view === 'register' && <p>注册信息将用于平台服务与个人贡献记录。</p>}
+            {view === 'register' && <p>注册信息将用于平台服务与个人贡献记录</p>}
           </div>
 
           {view === 'login' ? (
@@ -165,21 +172,21 @@ export default function AuthDialog() {
                 {loginMode === 'password' ? <button type="button" className="text-link muted">忘记密码？</button> : <span />}
                 <button type="button" className="text-link" onClick={() => { setView('register'); setMessage('') }}>注册</button>
               </div>
-              <Agreement agreed={agreed} onToggle={() => setAgreed((value) => !value)} />
+              <Agreement agreed={agreed} onToggle={() => setAgreed((value) => !value)} action="登录" />
             </form>
           ) : (
             <form className="auth-form register-form" onSubmit={submitRegister}>
               <label className="field-label"><span>邮箱/手机号 <b>*</b></span><span className="field-control"><Mail size={18} /><input value={account} onChange={(event) => setAccount(event.target.value)} placeholder="请输入邮箱或手机号" autoComplete="username" /></span></label>
               <label className="field-label"><span>密码 <b>*</b></span><span className="field-control"><LockKeyhole size={18} /><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="至少6位密码" autoComplete="new-password" /></span></label>
               <label className="field-label"><span>确认密码 <b>*</b></span><span className="field-control"><LockKeyhole size={18} /><input type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder="请再次输入密码" autoComplete="new-password" /></span></label>
-              <label className="field-label"><span>用户名</span><span className="field-control"><Mail size={18} /><input value={username} onChange={(event) => setUsername(event.target.value)} placeholder="可不填，系统将自动生成" /></span><small>用户名需保持唯一。</small></label>
-              <Agreement agreed={agreed} onToggle={() => setAgreed((value) => !value)} />
+              <label className="field-label"><span>用户名</span><span className="field-control"><Mail size={18} /><input value={username} onChange={(event) => setUsername(event.target.value)} placeholder="可不填，系统将自动生成" /></span><small>用户名需保持唯一</small></label>
+              <Agreement agreed={agreed} onToggle={() => setAgreed((value) => !value)} action="注册" />
               {message && <p className="auth-message">{message}</p>}
               <button type="submit" className="auth-submit">注册并登录</button>
             </form>
           )}
 
-          <p className="security-notice"><ShieldCheck size={18} />本平台为内部科研信息管理平台，严禁处理、传输国家秘密。</p>
+          <p className="security-notice"><ShieldCheck size={18} />本平台为内部科研信息管理平台，严禁处理、传输国家秘密</p>
           <div className="auth-footer-links"><button type="button">登录遇到问题？联系我们</button></div>
         </div>
       </section>
@@ -187,11 +194,11 @@ export default function AuthDialog() {
   )
 }
 
-function Agreement({ agreed, onToggle }: { agreed: boolean; onToggle: () => void }) {
+function Agreement({ agreed, onToggle, action }: { agreed: boolean; onToggle: () => void; action: '登录' | '注册' }) {
   return (
     <div className="agreement-row">
       <button type="button" className={`agreement-check${agreed ? ' checked' : ''}`} onClick={onToggle} aria-label="同意协议">{agreed && <Check size={13} />}</button>
-      <p>登录即代表同意诺亚-科学语料库<a href="#agreement">《使用协议》</a><a href="#privacy">《隐私权限》</a></p>
+      <p>{action}即代表同意格物-科学语料库<a href="#agreement">《使用协议》</a><a href="#privacy">《隐私权限》</a></p>
     </div>
   )
 }

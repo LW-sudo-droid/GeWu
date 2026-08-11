@@ -4,7 +4,6 @@ import { Link } from 'react-router'
 const subjectData = [
   {
     name: '数学',
-    english: 'MATHEMATICS',
     sets: '92个',
     items: '3.2亿条',
     size: '1.8PB',
@@ -14,7 +13,6 @@ const subjectData = [
   },
   {
     name: '物理',
-    english: 'PHYSICS',
     sets: '118个',
     items: '6.8亿条',
     size: '5.6PB',
@@ -24,7 +22,6 @@ const subjectData = [
   },
   {
     name: '化学',
-    english: 'CHEMISTRY',
     sets: '156个',
     items: '21.5亿条',
     size: '2.4PB',
@@ -34,7 +31,6 @@ const subjectData = [
   },
   {
     name: '天文',
-    english: 'ASTRONOMY',
     sets: '134个',
     items: '9.6亿条',
     size: '12.8PB',
@@ -44,7 +40,6 @@ const subjectData = [
   },
   {
     name: '地理',
-    english: 'GEOGRAPHY',
     sets: '180个',
     items: '12.2亿条',
     size: '5.2PB',
@@ -54,7 +49,6 @@ const subjectData = [
   },
   {
     name: '生物',
-    english: 'BIOLOGY',
     sets: '246个',
     items: '38.7亿条',
     size: '10.2PB',
@@ -70,7 +64,6 @@ export default function SubjectShowcase() {
       <div className="subject-showcase-inner">
         <header className="subject-showcase-heading">
           <div>
-            <span>SIX FUNDAMENTAL DISCIPLINES</span>
             <h2 id="subject-showcase-title">六大学科领域</h2>
           </div>
           <p>覆盖数理化天地生六大基础学科，集中展示各领域语料建设规模与工具链成果。</p>
@@ -82,7 +75,7 @@ export default function SubjectShowcase() {
             return (
               <Link
                 className={`subject-data-card subject-accent-${subject.accent}`}
-                to={`/search?domain=${encodeURIComponent(subject.name)}`}
+                to={`/search/results?domain=${encodeURIComponent(subject.name)}`}
                 aria-label={`查看${subject.name}领域语料`}
                 key={subject.name}
               >
@@ -91,7 +84,6 @@ export default function SubjectShowcase() {
                   <span className="subject-card-icon"><Icon size={22} /></span>
                   <div>
                     <h3>{subject.name}</h3>
-                    <small>{subject.english}</small>
                   </div>
                 </header>
 
