@@ -1,91 +1,98 @@
-import { Building2, Database, Globe2, GraduationCap, Landmark, Network, Sparkles, Target, UsersRound, Wrench } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, Building2, GraduationCap, Microscope, Network, Sparkles, UserRound } from 'lucide-react'
+import { Link } from 'react-router'
+import LogoMark from '../components/LogoMark'
 
-const strategyCards = [
-  {
-    title: '国家战略定位',
-    icon: Landmark,
-    text: 'AI for Science（AI4S）是一种全新的科研范式，也是我国实现科技自立自强、建设科技强国的必经之路。习近平总书记强调要“以人工智能引领科研范式变革”“体系化布局建设重大科技基础设施，建设智能化科研平台系统”，《国务院关于深入实施“人工智能+”行动的意见》明确要求加快科学大模型建设应用、打造开放共享的高质量科学数据集。当前，全球AI竞争正进入以高质量科学数据为核心的战略博弈阶段，数据作为与算法、算力协同的关键资源，直接决定模型对复杂科学问题的理解与推理能力。建设AI4S战略语料库，对于我国突破“卡脖子”技术瓶颈、抢占科学智能制高点具有重大战略意义。',
-  },
-  {
-    title: '项目定位',
-    icon: Target,
-    text: '项目坚持“边建设、边应用、边开放”原则，免费向国家人工智能训练场全量开放，以公益授权机制无条件支持国家战略重点项目研发。构建“数据—工具—人才—模型”四位一体、长效共进化的建设体系，致力于服务国家战略需求、赋能科研创新、降低行业门槛、培养复合型人才，打造中国科学界共同的数据地基和创新引擎。',
-  },
-  {
-    title: '当前困境与挑战',
-    icon: Network,
-    text: '当前，我国基础学科语料资源建设面临多重结构性瓶颈。基础学科语料资源分散于高校、科研院所和行业机构，统一的汇交治理机制与数据标准尚不完善，“数据孤岛”问题突出。数学公式、实验图谱、生物分子结构等复杂多模态数据难以深度对齐，现有互联网语料也面临质量、科学价值和版权合规等风险，高质量科研语料及思维链数据仍存在结构性缺口。',
-  },
-  {
-    title: '建设必要性',
-    icon: Sparkles,
-    text: '面向科学智能发展，需要推动科研数据的有组织汇聚、标准化治理与高质量增量生成，构建“数据生成—模型训练—科学发现”的闭环。北京大学依托完备的人才梯队和数理化天地生六大基础学科优势，建设高质量战略语料库，为AI4S发展和关键核心技术突破提供数据基础。',
-  },
+type EcosystemKey = '高校' | '科研机构' | '企业' | '个人'
+
+const philosophyNodes = [
+  { key: 'open', title: '开放协同', text: '汇聚高校、科研机构、企业和个人建设力量，形成多方参与、优势互补的语料建设机制', keywords: '多方参与 · 共建共享' },
+  { key: 'subject', title: '学科组织', text: '依托六大基础学科体系和专业人才队伍，保障科学语料的专业性、系统性与知识深度', keywords: '六大学科 · 共同参与' },
+  { key: 'governance', title: '规范治理', text: '对语料来源、加工过程、权益信息、开放范围和版本变化进行规范记录与管理', keywords: '可治理 · 可追溯 · 可复用' },
+  { key: 'iteration', title: '持续迭代', text: '推动数据、工具、人才和模型协同演化，通过建设与使用反馈不断提升语料质量', keywords: '协同演化 · 持续更新' },
 ]
 
-const universities = [
-  { mark: '清华', name: '清华大学', subject: '主责物理学科', text: '1978年建立我国人工智能最早的教研组，CS Rankings人工智能学者高水平成果居世界第一，US News全球计算机学科第一。物理系拥有1个全国重点实验室、1个前沿科学中心，教师中科院院士10人。' },
-  { mark: '厦大', name: '厦门大学', subject: '主责化学学科', text: '化学学科入选国家“双一流”建设学科，首批获批建设人工智能专业高校。Nature Index 2024 AI全球100强中位居全国第12、全球第71。' },
-  { mark: '南大', name: '南京大学', subject: '主责天文学科', text: '依托百年学科基础，近五年承担国家级重大项目140余项。天文学领域主持研制龙虾眼X射线探测卫星、羲和号等大型观测设备，已建成PB量级数据中心。' },
-  { mark: '武大', name: '武汉大学', subject: '主责地理学科', text: '地理、环境两学科双双进入QS世界前100名，测绘科学与技术获评A+。设有人工智能学院、武汉数学与智能研究院。' },
-  { mark: '复旦', name: '复旦大学', subject: '主责生物学科', text: '生物学入选国家“双一流”建设学科，发布国内第一个对话式大语言模型MOSS。在AI与生命、数学、物理、化学、医学等多学科交叉领域重点布局，全球声誉位居世界前50。' },
-  { mark: '交大', name: '上海交通大学', subject: '主责大模型技术', text: 'CS Rankings计算机专业和AI分项均位列全球第三，拥有全国唯一的教育部人工智能重点实验室，获批国家人工智能产教融合创新平台。汇聚IEEE Fellow 14名、国家级高层次人才66人次。' },
-]
-
-const enterprises = ['鹏城实验室', '华为', '万方数据', '深势科技', '京能集团', '百度', '字节跳动', '中国联通', '蚂蚁集团']
+const ecosystemGroups: Record<EcosystemKey, { icon: typeof GraduationCap; summary: string; members: string[] }> = {
+  高校: { icon: GraduationCap, summary: '提供学科体系、专业人才与高质量学科语料', members: ['北京大学', '清华大学', '厦门大学', '南京大学', '武汉大学', '复旦大学', '上海交通大学'] },
+  科研机构: { icon: Microscope, summary: '汇聚科研数据、实验资源与前沿科学成果', members: ['北京科学智能研究院', '鹏城实验室'] },
+  企业: { icon: Building2, summary: '提供技术工具、数据资源与应用场景', members: ['华为', '万方数据', '深势科技', '京能集团', '百度', '字节跳动', '中国联通', '蚂蚁集团'] },
+  个人: { icon: UserRound, summary: '贡献专业语料、领域知识与实际使用反馈', members: ['教师', '科研人员', '学生', '专业技术人员', '公众贡献者'] },
+}
 
 export default function About() {
-  return (
-    <div className="about-page">
-      <section className="about-hero">
-        <div className="about-hero-orbit" aria-hidden="true" />
-        <div className="about-hero-inner">
-          <span>关于我们</span>
-          <h1>共建基础学科战略语料库<br />夯实科学智能数据基础</h1>
-          <p>汇聚多方建设力量，推动科学语料有组织汇交、标准化治理与开放共享</p>
-        </div>
-      </section>
+  const [activeGroup, setActiveGroup] = useState<EcosystemKey>('高校')
+  const active = ecosystemGroups[activeGroup]
 
-      <section className="about-section about-overview-section">
-        <header className="about-section-heading"><span>01</span><div><h2>项目概述</h2><p>覆盖基础学科全谱系的战略语料库建设工程</p></div></header>
-        <div className="about-overview-card">
-          <article>
-            <h3>格物 · 科学语料库</h3>
-            <p>由国家发展改革委批复立项，教育部统筹，北京大学牵头建设，聚焦数学、物理、化学、天文、地理、生物六大基础学科，旨在建成全球首个覆盖基础学科全谱系的战略语料库。</p>
-            <p>项目按照“1+6+N”开放协同机制推进，以国际科学智能联盟为组织抓手，以“可治理、可追溯、可复用、可迭代”为建设主线，构建覆盖数理化天地生六大基础学科的高质量语料体系。</p>
-          </article>
-          <div className="about-goal-grid">
-            <div><Database size={21} /><strong>≥1,000</strong><span>个子语料库</span></div>
-            <div><Globe2 size={21} /><strong>≥1,000</strong><span>种数据源</span></div>
-            <div><Network size={21} /><strong>≥50</strong><span>种数据子模态</span></div>
-            <div><Wrench size={21} /><strong>≥50 / ≥200</strong><span>加工工具 / 工具链</span></div>
+  return (
+    <div className="about-platform-page">
+      <section className="about-introduction-section">
+        <div className="about-platform-container">
+          <header className="about-platform-heading"><span>ABOUT</span><h1>关于我们</h1></header>
+          <div className="about-brand-row"><LogoMark size={72} /><div><strong>格物 · 科学语料库</strong><span>科学语料共建共享平台</span></div></div>
+          <div className="about-introduction-grid">
+            <article>
+              <p><strong>格物 · 科学语料库</strong>——面向科学智能发展的高质量科学语料共建共享平台。聚焦数学、物理、化学、天文、地理、生物六大基础学科，持续汇聚高校、科研机构、企业和个人建设的科学语料资源。</p>
+              <p>平台按照“1+6+N”开放协同机制推进，依托完整的学科体系和多方建设力量，以“可治理、可追溯、可复用、可迭代”为建设理念，贯通多源多模态语料汇聚、专业加工、质量评估、开放共享与持续迭代，推动人类专家、智能模型和语料加工工具协同参与科学语料建设。</p>
+            </article>
+            <aside className="about-relation-card">
+              <div className="relation-flow"><span><UserRound size={18} />语料贡献者</span><ArrowRight size={18} /><strong><LogoMark size={34} />格物 · 科学语料库</strong><ArrowRight size={18} /><span><Sparkles size={18} />科研、教学与模型应用</span></div>
+              <div className="relation-audience"><b>服务对象</b><p>高校、科研机构、科技企业、教师、科研人员、学生及模型研发人员</p></div>
+            </aside>
           </div>
         </div>
-        <div className="about-collaboration-line"><span>1个牵头单位</span><i /><span>6所协同高校</span><i /><span>N个共建机构</span><i /><strong>人机协同迭代演化</strong></div>
       </section>
 
-      <section className="about-section about-strategy-section">
-        <header className="about-section-heading"><span>02</span><div><h2>战略背景</h2><p>面向国家战略需求，构建科学智能发展所需的数据基础设施</p></div></header>
-        <div className="about-strategy-grid">{strategyCards.map((card, index) => { const Icon = card.icon; return <article key={card.title} className={index === 0 ? 'is-primary' : ''}><div><Icon size={21} /><span>0{index + 1}</span></div><h3>{card.title}</h3><p>{card.text}</p></article> })}</div>
+      <section className="about-strategic-section">
+        <div className="about-platform-container">
+          <header className="about-section-title"><span>01</span><div><h2>战略背景</h2><p>面向科学智能发展需求，建设开放协同、规范可信的科学语料基础设施</p></div></header>
+          <div className="strategic-card-grid">
+            <article className="strategy-national-card">
+              <div className="strategy-card-label"><Sparkles size={21} /><span>国家战略定位</span></div>
+              <h3>以高质量科学数据<br />支撑科研范式变革</h3>
+              <p>AI for Science（AI4S）是一种全新的科研范式，也是我国实现科技自立自强、建设科技强国的必经之路。习近平总书记强调要“以人工智能引领科研范式变革”“体系化布局建设重大科技基础设施，建设智能化科研平台系统”，《国务院关于深入实施“人工智能+”行动的意见》明确要求加快科学大模型建设应用、打造开放共享的高质量科学数据集。</p>
+              <p>高质量科学数据不仅是人工智能理解科学知识、开展复杂推理的重要基础，也是科学大模型建设和科研智能化发展的关键支撑。面向国家人工智能与科技创新战略需求，格物 · 科学语料库着力建设开放协同、规范可信的科学语料基础设施，推动基础学科数据资源转化为可服务科研创新、教育教学和模型发展的高质量科学语料。</p>
+            </article>
+            <article className="strategy-challenge-card">
+              <div className="strategy-card-label"><Network size={21} /><span>当前困境与挑战</span></div>
+              <h3>回应科学语料建设的现实需求</h3>
+              <p>当前，我国基础学科语料资源分散于高校、科研院所和行业机构，统一的汇交治理机制与数据标准尚不完善，“数据孤岛”问题突出。数学公式、实验图谱、生物分子结构等复杂科学数据具有显著的专业性和多模态特征，深度解析、语义对齐和质量评价难度较高。</p>
+              <div className="challenge-tags"><span>资源分散</span><span>标准不一</span><span>多模态对齐困难</span><span>专业语料不足</span></div>
+              <p>高质量专业语料、领域推理过程和长思维链数据仍存在结构性缺口，语料来源、权益边界、加工过程和更新版本也需要更加规范的记录与管理。格物 · 科学语料库将通过多方语料汇聚、专业加工、规范治理与开放协同，推动解决科学数据分散、标准不一、多模态对齐困难和高质量专业语料不足等问题。</p>
+            </article>
+          </div>
+        </div>
       </section>
 
-      <section className="about-section about-units-section">
-        <header className="about-section-heading is-centered"><span>03</span><div><h2>建设单位</h2><p>多方协同、优势互补，共建科学语料开放生态</p></div></header>
-
-        <div className="about-subheading"><Landmark size={18} /><h3>牵头单位</h3></div>
-        <article className="lead-unit-card">
-          <div className="university-mark is-pku"><span>北大</span><small>1898</small></div>
-          <div><div className="lead-unit-title"><span>牵头单位</span><h3>北京大学</h3></div><p>北京大学坚持文理医工协调发展，学科体系完备。在全国第四轮学科评估中，数学、物理、化学、地理、生物等21个一级学科获评“A+”，居全国高校首位。2018年，鄂维南院士和汤超院士在北大首倡AI for Science理念，学校设立全球首个科学智能学院，牵头发起“国际科学智能联盟”，超60家机构深度参与。北大自主开发的DataFlow语料全生命周期加工与管理平台，已具备覆盖“采集—清洗—加工—对齐—评测—发布—迭代”的全链条流程支撑能力。</p></div>
-        </article>
-
-        <div className="about-subheading"><GraduationCap size={18} /><h3>协同高校</h3></div>
-        <div className="partner-university-grid">{universities.map((item) => <article key={item.name}><header><div className="university-mark"><span>{item.mark}</span></div><div><h3>{item.name}</h3><span>{item.subject}</span></div></header><p>{item.text}</p></article>)}</div>
-
-        <div className="about-subheading"><Building2 size={18} /><h3>共建企业与机构</h3></div>
-        <div className="co-builder-panel"><div><UsersRound size={30} /><strong>开放协同建设网络</strong><span>汇集科研机构、科技企业与数据服务单位的专业能力</span></div><ul>{enterprises.map((item) => <li key={item}>{item}</li>)}</ul></div>
+      <section className="about-philosophy-section">
+        <div className="about-platform-container">
+          <header className="about-dark-heading"><span>02</span><h2>建设理念</h2><p>以开放协同汇聚建设力量，以学科体系保障专业质量，以规范治理建立可信基础，以持续迭代释放语料价值</p></header>
+          <div className="philosophy-orbit-stage">
+            <div className="philosophy-grid" aria-hidden="true" />
+            <div className="philosophy-ring ring-one" aria-hidden="true" />
+            <div className="philosophy-ring ring-two" aria-hidden="true" />
+            <span className="orbit-word orbit-word-one">汇聚</span><span className="orbit-word orbit-word-two">治理</span><span className="orbit-word orbit-word-three">共享</span><span className="orbit-word orbit-word-four">反馈</span>
+            <div className="philosophy-core"><LogoMark size={62} /><strong>格物 · 科学语料库</strong><span>科学语料共建共享平台</span><small>连接学科资源、专业人才、加工工具与智能模型</small></div>
+            {philosophyNodes.map((node, index) => <article key={node.key} className={`philosophy-node node-${node.key}`}><i>0{index + 1}</i><h3>{node.title}</h3><p>{node.text}</p><span>{node.keywords}</span></article>)}
+          </div>
+        </div>
       </section>
 
-      <section id="site-statement" className="about-statement"><span>© 2026 北京大学 版权所有</span></section>
+      <section className="about-ecosystem-section">
+        <div className="about-platform-container">
+          <header className="about-section-title is-centered"><span>03</span><div><h2>共建生态</h2><p>连接高校、科研机构、企业和个人贡献者，汇聚学科资源、科研数据、技术工具与专业知识，共同建设持续演化的科学语料生态</p></div></header>
+          <div className="ecosystem-network-stage">
+            <div className="ecosystem-stars" aria-hidden="true" />
+            <div className="ecosystem-ring ring-a" aria-hidden="true" /><div className="ecosystem-ring ring-b" aria-hidden="true" /><div className="ecosystem-ring ring-c" aria-hidden="true" />
+            <div className="ecosystem-ring-copy" aria-hidden="true">{['汇聚', '治理', '共享', '使用', '反馈', '迭代'].map((item) => <span key={item}>{item}</span>)}</div>
+            <div className="ecosystem-core"><LogoMark size={66} /><strong>格物 · 科学语料库</strong><span>科学语料共建共享枢纽</span></div>
+            {(Object.keys(ecosystemGroups) as EcosystemKey[]).map((key) => { const group = ecosystemGroups[key]; const Icon = group.icon; return <button type="button" key={key} className={`ecosystem-group-node group-${key === '高校' ? 'university' : key === '科研机构' ? 'research' : key === '企业' ? 'enterprise' : 'individual'}${activeGroup === key ? ' is-active' : ''}`} onMouseEnter={() => setActiveGroup(key)} onFocus={() => setActiveGroup(key)} onClick={() => setActiveGroup(key)}><Icon size={22} /><strong>{key}</strong><small>{group.summary}</small></button> })}
+            <div className="ecosystem-member-panel">
+              <div><span>{activeGroup}</span><strong>{active.summary}</strong></div>
+              <div className={`ecosystem-member-list is-${activeGroup === '高校' ? 'university' : 'standard'}`}>{active.members.map((member) => activeGroup === '个人' ? <span key={member}><i>{member.slice(0, 1)}</i>{member}</span> : <Link className={member === '北京大学' ? 'is-lead' : ''} key={member} to={`/search/results?publisher=${encodeURIComponent(member)}`}><i>{member.slice(0, 2)}</i>{member}</Link>)}</div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
