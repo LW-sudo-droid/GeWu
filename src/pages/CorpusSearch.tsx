@@ -475,12 +475,18 @@ export default function CorpusSearch({ pageType = 'search' }: { pageType?: 'sear
   const externalFilterTags = useMemo<ExternalFilterTag[]>(() => {
     const tags: ExternalFilterTag[] = []
     if (appliedSearch.mode === 'simple' && appliedSearch.simpleKeyword) {
+      const mapped = mappedFiltersFromSearch(appliedSearch)
+      const representedBySidebar = appliedSearch.simpleField === 'subject' && mapped.subject
+        || appliedSearch.simpleField === 'organization' && mapped.publisher
+      if (representedBySidebar) return tags
       const fieldLabel = fieldOptions.find((option) => option.value === appliedSearch.simpleField)?.label ?? '检索内容'
       tags.push({ id: 'simple-query', label: `${fieldLabel}：${appliedSearch.simpleKeyword}`, onRemove: () => setAppliedSearch(emptyAppliedSearch()) })
     }
     if (appliedSearch.mode === 'advanced') {
+      const mapped = mappedFiltersFromSearch(appliedSearch)
       appliedSearch.conditions.forEach((condition) => {
         if (!condition.value) return
+        if (condition.field === 'subject' && mapped.subject || condition.field === 'organization' && mapped.publisher) return
         const fieldLabel = fieldOptions.find((option) => option.value === condition.field)?.label ?? '检索内容'
         tags.push({
           id: `condition-${condition.id}`,
@@ -504,18 +510,27 @@ export default function CorpusSearch({ pageType = 'search' }: { pageType?: 'sear
     syncSearchParams({ publisher: undefined, domain: undefined, q: undefined, field: undefined, search: undefined })
   }
 
-  const clearMappedSearchFilter = () => {
-    setAppliedSearch(emptyAppliedSearch())
-    setPublisherFilter('')
-    setSubjectFilter('')
-    setResultSearchKeyword('')
-    setFacetFilters(emptyFacetFilters)
+  const clearMappedSearchFilter = (type: 'subject' | 'publisher') => {
+    const mappedField: SearchField = type === 'subject' ? 'subject' : 'organization'
+    const mappedParam = type === 'subject' ? 'domain' : 'publisher'
+    if (appliedSearch.mode === 'simple' && appliedSearch.simpleField === mappedField) {
+      setAppliedSearch(emptyAppliedSearch())
+      setResultSearchKeyword('')
+      syncSearchParams({
+        [mappedParam]: undefined, q: undefined, field: undefined, search: undefined,
+      })
+    } else if (appliedSearch.mode === 'advanced') {
+      const nextConditions = appliedSearch.conditions.filter((condition) => condition.field !== mappedField)
+      setAppliedSearch((current) => ({ ...current, conditions: nextConditions }))
+      syncSearchParams({
+        [mappedParam]: undefined,
+        conditions: nextConditions.length ? JSON.stringify(nextConditions) : undefined,
+        search: nextConditions.length || appliedSearch.startDate || appliedSearch.endDate ? 'advanced' : undefined,
+      })
+    } else {
+      syncSearchParams({ [mappedParam]: undefined })
+    }
     setCurrentPage(1)
-    setFilterResetVersion((value) => value + 1)
-    syncSearchParams({
-      publisher: undefined, domain: undefined, q: undefined, field: undefined, search: undefined,
-      conditions: undefined, startDate: undefined, endDate: undefined,
-    })
   }
 
   return (
