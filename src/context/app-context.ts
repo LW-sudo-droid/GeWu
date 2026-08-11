@@ -5,11 +5,18 @@ export type DemoUser = {
   account: string
 }
 
+export type FavoriteCorpus = {
+  id: string
+  title: string
+}
+
 export type AppContextValue = {
   authOpen: boolean
   openAuth: () => void
   closeAuth: () => void
   user: DemoUser | null
+  favorites: FavoriteCorpus[]
+  toggleFavorite: (item: FavoriteCorpus) => void
   signIn: (user: DemoUser) => void
   signOut: () => void
 }

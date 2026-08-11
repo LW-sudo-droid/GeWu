@@ -40,7 +40,7 @@ type AppliedSearch = {
   endDate: string
 }
 
-type CorpusRecord = {
+export type CorpusRecord = {
   id: string
   title: string
   organization: string
@@ -98,7 +98,7 @@ const sortOptions: Array<{ value: SortKey; label: string }> = [
   { value: 'usage_desc', label: '使用量（从高到低）' },
 ]
 
-const corpusRecords: CorpusRecord[] = [
+export const corpusRecords: CorpusRecord[] = [
   { id: 'math-01', title: '基础数学定理证明长思维链语料', organization: '北京大学', subject: '数学', corpusType: '长思维链语料', openness: '开放共享', summary: '围绕代数、几何与分析中的典型命题，结构化呈现问题理解、方法选择、推导过程与结论验证。', publishedAt: '2026-08-06', views: 3680, favorites: 426, usage: 918, authors: '北京大学数学科学学院', keywords: ['定理证明', '长思维链', '代数', '几何'] },
   { id: 'physics-01', title: '量子力学问题求解与推理过程语料', organization: '北京大学', subject: '物理', corpusType: '后训练语料', openness: '依申请开放', summary: '覆盖量子态、算符、微扰理论等核心主题，保留规范化的计算步骤和物理解释。', publishedAt: '2026-08-02', views: 3124, favorites: 385, usage: 762, authors: '北京大学物理学院', keywords: ['量子力学', '推理过程', '问题求解'] },
   { id: 'chem-01', title: '有机合成路线设计长思维链语料', organization: '北京大学', subject: '化学', corpusType: '长思维链语料', openness: '依申请开放', summary: '面向目标分子逆合成分析，组织反应选择、条件判断、路线比较和可行性校验等专业推理信息。', publishedAt: '2026-07-30', views: 2956, favorites: 342, usage: 683, authors: '北京大学化学与分子工程学院', keywords: ['有机合成', '逆合成', '路线设计'] },
@@ -175,7 +175,7 @@ const emptyFacetFilters: CorpusFilterState = {
 const corpusSizeBuckets = ['1千以下', '1千-1万', '1万-10万', '10万-100万', '100万以上']
 const storageBuckets = ['<500GB', '500GB-1TB', '1-2TB', '>2TB']
 
-function recordDisplayMeta(item: CorpusRecord) {
+export function recordDisplayMeta(item: CorpusRecord) {
   const index = Math.max(0, corpusRecords.findIndex((record) => record.id === item.id))
   return {
     status: (index % 4 === 0 ? '待上传' : '已上传') as '已上传' | '待上传',
@@ -703,7 +703,7 @@ export default function CorpusSearch({ pageType = 'search' }: { pageType?: 'sear
               const displayMeta = recordDisplayMeta(item)
               const cardTarget = `/search/datasets/${item.id}`
               return (
-              <Link className="catalog-corpus-card" to={cardTarget} key={item.id}>
+              <Link className="catalog-corpus-card" to={cardTarget} target="_blank" rel="noreferrer" key={item.id}>
                 <div className="catalog-card-topline">
                   <div className="catalog-card-tags">
                     <span className="catalog-subject-tag">{item.subject}</span>
