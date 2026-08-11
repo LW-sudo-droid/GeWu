@@ -15,7 +15,7 @@ import {
   SlidersHorizontal,
   X,
 } from 'lucide-react'
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import CorpusFilterSidebar, { type CorpusFilterState, type ExternalFilterTag } from '../components/CorpusFilterSidebar'
 
 type SearchMode = 'simple' | 'advanced'
@@ -223,11 +223,10 @@ function initialSort(sort: string | null): SortKey {
   return 'published_desc'
 }
 
-export default function CorpusSearch() {
+export default function CorpusSearch({ pageType = 'search' }: { pageType?: 'search' | 'results' }) {
   const [searchParams, setSearchParams] = useSearchParams()
-  const location = useLocation()
   const navigate = useNavigate()
-  const isResultsPage = location.pathname === '/search/results'
+  const isResultsPage = pageType === 'results'
   const resultsRef = useRef<HTMLElement>(null)
   const nextConditionId = useRef(3)
   const [mode, setMode] = useState<SearchMode>('simple')
@@ -296,7 +295,7 @@ export default function CorpusSearch() {
     setPublisherFilter(mapped.publisher)
     setFacetFilters(emptyFacetFilters)
     setFilterResetVersion((value) => value + 1)
-    navigate(`/search/results?${nextParams.toString()}`)
+    navigate({ pathname: '/search/results', search: `?${nextParams.toString()}` })
   }
 
   const handleAdvancedSearch = () => {
@@ -315,7 +314,7 @@ export default function CorpusSearch() {
     setPublisherFilter(mapped.publisher)
     setFacetFilters(emptyFacetFilters)
     setFilterResetVersion((value) => value + 1)
-    navigate(`/search/results?${nextParams.toString()}`)
+    navigate({ pathname: '/search/results', search: `?${nextParams.toString()}` })
   }
 
   const resetAdvancedSearch = () => {
@@ -539,16 +538,17 @@ export default function CorpusSearch() {
         </div>
 
         {mode === 'simple' ? (
-          <form className="simple-search-form" onSubmit={handleSimpleSearch}>
+          <form className="simple-search-form" action="/search/results" method="get" onSubmit={handleSimpleSearch}>
+            <input type="hidden" name="search" value="simple" />
             <label>
               <span>检索字段</span>
-              <select value={simpleField} onChange={(event) => setSimpleField(event.target.value as SearchField)} aria-label="选择检索字段">
+              <select name="field" value={simpleField} onChange={(event) => setSimpleField(event.target.value as SearchField)} aria-label="选择检索字段">
                 {fieldOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
               </select>
             </label>
             <label className="simple-query-field">
               <span>检索内容</span>
-              <input value={simpleKeyword} onChange={(event) => setSimpleKeyword(event.target.value)} placeholder="请输入语料标题、关键词或相关信息" />
+              <input name="q" value={simpleKeyword} onChange={(event) => setSimpleKeyword(event.target.value)} placeholder="请输入语料标题、关键词或相关信息" />
             </label>
             <button className="primary-search-button" type="submit"><Search size={18} />检索</button>
           </form>
