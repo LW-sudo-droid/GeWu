@@ -30,7 +30,7 @@ import { useApp } from '../context/app-context'
 import { corpusRecords, recordDisplayMeta } from './CorpusSearch'
 
 type DetailTab = 'guide' | 'preview' | 'feedback'
-type PendingAction = 'edit' | 'upload' | null
+type PendingAction = 'edit' | 'upload' | 'download' | null
 type UploadMode = 'local' | 'external'
 type MemberPermission = '可管理' | '可编辑' | '可使用'
 
@@ -130,6 +130,7 @@ export default function DatasetDetail() {
     notify('实名认证已提交并通过验证')
     if (pendingAction === 'edit') navigate(`/upload?edit=${item.id}`)
     if (pendingAction === 'upload') setUploadOpen(true)
+    if (pendingAction === 'download') performDownload()
     setPendingAction(null)
   }
 
@@ -148,7 +149,7 @@ export default function DatasetDetail() {
     }
   }
 
-  const handleDownload = () => {
+  const performDownload = () => {
     if (openness === '不公开' && !isOwner) {
       notify('该语料暂不公开，请联系作者申请下载权限')
       return
@@ -162,6 +163,20 @@ export default function DatasetDetail() {
     anchor.click()
     URL.revokeObjectURL(url)
     notify(openness === '部分公开' && !isOwner ? '已下载公开部分数据，完整数据请联系作者申请' : '下载任务已开始')
+  }
+
+  const handleDownload = () => {
+    if (!user) {
+      openAuth()
+      notify('请先登录并完成实名认证')
+      return
+    }
+    if (!verified) {
+      setPendingAction('download')
+      setRealnameOpen(true)
+      return
+    }
+    performDownload()
   }
 
   const addMember = () => {
