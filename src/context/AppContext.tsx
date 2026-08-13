@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { AppContext, type AppContextValue, type DemoUser, type FavoriteCorpus } from './app-context'
 
 const STORAGE_KEY = 'gewuyuku-demo-user'
@@ -23,34 +23,53 @@ function loadStoredFavorites(): FavoriteCorpus[] {
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [authOpen, setAuthOpen] = useState(false)
+  const [authReturnTo, setAuthReturnTo] = useState<string | null>(null)
   const [user, setUser] = useState<DemoUser | null>(loadStoredUser)
   const [favorites, setFavorites] = useState<FavoriteCorpus[]>(loadStoredFavorites)
 
+  const openAuth = useCallback((returnTo?: string) => {
+    setAuthReturnTo(returnTo ?? null)
+    setAuthOpen(true)
+  }, [])
+
+  const closeAuth = useCallback(() => {
+    setAuthOpen(false)
+    setAuthReturnTo(null)
+  }, [])
+
+  const toggleFavorite = useCallback((item: FavoriteCorpus) => {
+    setFavorites((current) => {
+      const next = current.some((favorite) => favorite.id === item.id)
+        ? current.filter((favorite) => favorite.id !== item.id)
+        : [...current, item]
+      window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(next))
+      return next
+    })
+  }, [])
+
+  const signIn = useCallback((nextUser: DemoUser) => {
+    setUser(nextUser)
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
+    setAuthOpen(false)
+    setAuthReturnTo(null)
+  }, [])
+
+  const signOut = useCallback(() => {
+    setUser(null)
+    window.localStorage.removeItem(STORAGE_KEY)
+  }, [])
+
   const value = useMemo<AppContextValue>(() => ({
     authOpen,
-    openAuth: () => setAuthOpen(true),
-    closeAuth: () => setAuthOpen(false),
+    authReturnTo,
+    openAuth,
+    closeAuth,
     user,
     favorites,
-    toggleFavorite: (item) => {
-      setFavorites((current) => {
-        const next = current.some((favorite) => favorite.id === item.id)
-          ? current.filter((favorite) => favorite.id !== item.id)
-          : [...current, item]
-        window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(next))
-        return next
-      })
-    },
-    signIn: (nextUser) => {
-      setUser(nextUser)
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
-      setAuthOpen(false)
-    },
-    signOut: () => {
-      setUser(null)
-      window.localStorage.removeItem(STORAGE_KEY)
-    },
-  }), [authOpen, favorites, user])
+    toggleFavorite,
+    signIn,
+    signOut,
+  }), [authOpen, authReturnTo, closeAuth, favorites, openAuth, signIn, signOut, toggleFavorite, user])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

@@ -327,7 +327,7 @@ export default function CorpusCommunity() {
         <footer className="community-data-note">
           <span>机构所在省以注册机构地址为准</span>
           <span>个人仅展示省级汇总数据，不展示精确位置和未授权个人信息</span>
-          <span>统计快照：2026年7月10日 · 每月10日更新</span>
+          <span>2026年7月10日 · 每月10日更新</span>
         </footer>
       </div>
     </section>

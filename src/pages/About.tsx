@@ -109,7 +109,7 @@ export default function About() {
             <div className="philosophy-grid" aria-hidden="true" />
             <div className="philosophy-ring ring-one" aria-hidden="true" />
             <div className="philosophy-ring ring-two" aria-hidden="true" />
-            <span className="orbit-word orbit-word-one">汇聚</span><span className="orbit-word orbit-word-two">治理</span><span className="orbit-word orbit-word-three">共享</span><span className="orbit-word orbit-word-four">反馈</span>
+            <div className="philosophy-orbit-copy" aria-hidden="true">{['汇聚', '治理', '共享', '反馈'].map((item) => <span key={item}>{item}</span>)}</div>
             <div className="philosophy-core"><LogoMark size={62} /><strong>格物 · 科学语料库</strong><span>科学语料共建共享平台</span><small>连接学科资源、专业人才、加工工具与智能模型</small></div>
             {philosophyNodes.map((node, index) => <article key={node.key} className={`philosophy-node node-${node.key}`}><i>0{index + 1}</i><h3>{node.title}</h3><p>{node.text}</p><span>{node.keywords}</span></article>)}
           </div>

@@ -78,7 +78,7 @@ export default function Header() {
               )}
             </div>
           ) : (
-            <button type="button" className="login-trigger" onClick={openAuth}>
+            <button type="button" className="login-trigger" onClick={() => openAuth()}>
               <UserRound size={17} />登录
             </button>
           )}

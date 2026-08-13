@@ -65,8 +65,8 @@ export default function SubjectShowcase() {
         <header className="subject-showcase-heading">
           <div>
             <h2 id="subject-showcase-title">六大学科领域</h2>
+            <p>覆盖数理化天地生六大基础学科，集中展示各领域语料建设规模与工具链成果。</p>
           </div>
-          <p>覆盖数理化天地生六大基础学科，集中展示各领域语料建设规模与工具链成果。</p>
         </header>
 
         <div className="subject-card-grid">

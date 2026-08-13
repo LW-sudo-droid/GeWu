@@ -1,9 +1,15 @@
-import { BadgeCheck, BookOpen, Boxes, Braces, BrainCircuit, Database, FileStack, LibraryBig, ListFilter, Network, ScanSearch, Search, Tags, UploadCloud, Waypoints } from 'lucide-react'
+import { Search, UploadCloud } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { useApp } from '../context/app-context'
 import CorpusCommunity from '../components/CorpusCommunity'
 import SubjectShowcase from '../components/SubjectShowcase'
 import QualityCorpusDiscovery from '../components/QualityCorpusDiscovery'
+import multiPartyImage from '../assets/capabilities/multi-party.png'
+import governanceImage from '../assets/capabilities/governance.png'
+import discoveryImage from '../assets/capabilities/discovery.png'
+import processingImage from '../assets/capabilities/processing.png'
+import trustedUseImage from '../assets/capabilities/trusted-use.png'
+import iterationImage from '../assets/capabilities/iteration.png'
 
 const metrics = [
   { value: '92亿条', label: '语料条数' },
@@ -19,9 +25,47 @@ const evolutionItems = [
   { key: 'model', mark: '智', title: '模型', detail: '智能模型' },
 ]
 
-const subjects = ['数学', '物理', '化学', '天文', '地理', '生物']
-const learningSources = ['培养方案与教学大纲', '专业教材', '课件', '教学视频', '习题与考题']
-const chainOutputs = ['公式推理证明', '动力学演化推理', '物质性质分析', '天体起源推演', '地质环境影响', '……']
+const platformCapabilities = [
+  {
+    key: 'contribute',
+    title: '多方汇聚',
+    description: '连接高校、科研机构、企业和个人，持续汇交科学语料',
+    image: multiPartyImage,
+    to: '/upload',
+  },
+  {
+    key: 'govern',
+    title: '规范治理',
+    description: '统一分类与权益记录，保障语料全流程可追溯',
+    image: governanceImage,
+  },
+  {
+    key: 'discover',
+    title: '精准发现',
+    description: '通过多维检索、在线预览和筛选快速定位所需语料',
+    image: discoveryImage,
+    to: '/search',
+  },
+  {
+    key: 'process',
+    title: '专业加工',
+    description: '复用专业工具链，支持多模态处理、标注、对齐与评估',
+    image: processingImage,
+    to: '/tools',
+  },
+  {
+    key: 'use',
+    title: '可信使用',
+    description: '提供分级开放与权限管理，兼顾共享、权益和安全合规',
+    image: trustedUseImage,
+  },
+  {
+    key: 'iterate',
+    title: '协同迭代',
+    description: '连接贡献、使用与管理，以应用反馈推动持续更新',
+    image: iterationImage,
+  },
+]
 
 export default function Home() {
   const navigate = useNavigate()
@@ -29,7 +73,10 @@ export default function Home() {
 
   const handleUpload = () => {
     if (user) navigate('/upload')
-    else openAuth()
+    else {
+      navigate('/upload')
+      openAuth()
+    }
   }
 
   return (
@@ -40,7 +87,7 @@ export default function Home() {
         <div className="cosmic-arc cosmic-arc-two" aria-hidden="true" />
         <div className="hero-grid hero-grid-redesign">
           <div className="hero-copy">
-            <h1>高质量科学语料<br /><em>共建共享平台</em></h1>
+            <h1><span>高质量科学语料</span><br /><em>共建共享平台</em></h1>
             <p>汇聚高校、企业、新型研发机构与个人建设成果，连接语料贡献者与使用者，服务科研创新、教育教学与模型训练</p>
             <div className="hero-actions">
               <button className="primary-action hero-button" type="button" onClick={handleUpload}>
@@ -86,111 +133,28 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="corpus-features-section">
-        <div className="features-section-heading">
-          <h2>平台语料特色</h2>
-        </div>
+      <section className="platform-capabilities-section">
+        <div className="platform-capabilities-container">
+          <header className="platform-capabilities-heading">
+            <h2>平台能力</h2>
+            <p>贯通科学语料汇聚、治理、加工、发现、使用与迭代，连接语料建设成果与科研应用</p>
+          </header>
 
-        <div className="corpus-features-grid">
-          <article className="corpus-feature-card chain-feature-card">
-            <header className="feature-card-heading">
-              <span className="feature-card-icon"><BrainCircuit size={22} /></span>
-              <div><h3>长思维链语料</h3><p>人 + 模型 + 工具</p></div>
-            </header>
+          <div className="platform-capabilities-grid">
+            {platformCapabilities.map((capability) => {
+              const content = (
+                <>
+                  <img src={capability.image} alt="" aria-hidden="true" />
+                  <h3>{capability.title}</h3>
+                  <p>{capability.description}</p>
+                </>
+              )
 
-            <div className="chain-flow-diagram">
-              <div className="chain-input-column">
-                <section className="diagram-box subject-box">
-                  <div className="diagram-box-title"><Network size={15} />学科体系</div>
-                  <div className="diagram-tag-grid subjects-grid">
-                    {subjects.map((item) => <span key={item}>{item}</span>)}
-                  </div>
-                </section>
-                <section className="diagram-box data-foundation-box">
-                  <div className="diagram-box-title"><BookOpen size={15} />数据基础</div>
-                  <div className="diagram-tag-grid learning-grid">
-                    {learningSources.map((item) => <span key={item}>{item}</span>)}
-                  </div>
-                </section>
-              </div>
-
-              <div className="diagram-arrow horizontal-arrow" aria-hidden="true"><i /></div>
-
-              <section className="diagram-box chain-module-box">
-                <div className="diagram-box-title"><BrainCircuit size={15} />思维链模块</div>
-                <div className="chain-module-items">
-                  <figure>
-                    <img src={`${import.meta.env.BASE_URL}images/knowledge-map.png`} alt="领域知识地图" />
-                    <figcaption>领域知识地图</figcaption>
-                  </figure>
-                  <figure>
-                    <img src={`${import.meta.env.BASE_URL}images/reasoning-process.png`} alt="领域推理过程" />
-                    <figcaption>领域推理过程</figcaption>
-                  </figure>
-                </div>
-              </section>
-
-              <div className="diagram-arrow horizontal-arrow" aria-hidden="true"><i /></div>
-
-              <section className="chain-output-box">
-                <strong>高质量领域<br />长思维链语料</strong>
-                <div className="output-tags">
-                  {chainOutputs.map((item) => <span className={item === '……' ? 'output-more' : ''} key={item}>{item}</span>)}
-                </div>
-              </section>
-
-              <div className="vertical-flow module-generation-flow" aria-hidden="true"><i /><span>模块生成</span></div>
-              <div className="vertical-flow model-synthesis-flow" aria-hidden="true"><i /><span>合成补足</span></div>
-              <section className="foundation-model-bar">
-                <strong>先进通用大模型合成数据构建体系</strong>
-              </section>
-            </div>
-          </article>
-
-          <article className="corpus-feature-card multimodal-feature-card">
-            <header className="feature-card-heading">
-              <span className="feature-card-icon"><Database size={22} /></span>
-              <div><h3>多模态语料</h3><p>多源数据融合与深度对齐</p></div>
-            </header>
-
-            <div className="multimodal-flow-diagram">
-              <section className="diagram-box production-box">
-                <div className="diagram-stage-title">01&nbsp;&nbsp;数据生产</div>
-                <div className="production-visual-list">
-                  <div className="visual-process-card"><i><FileStack size={20} /></i><span><strong>数据来源</strong><small>文献 · 专利 · 报告 · 仪器</small></span></div>
-                  <div className="visual-process-card"><i><ListFilter size={20} /></i><span><strong>数据处理</strong><small>采集 · 清洗 · 识别</small></span></div>
-                  <div className="visual-process-card"><i><Boxes size={20} /></i><span><strong>数据实体</strong><small>文本 · 公式 · 图像 · 光谱 · 结构</small></span></div>
-                </div>
-              </section>
-
-              <div className="diagram-arrow horizontal-arrow" aria-hidden="true"><i /></div>
-
-              <section className="diagram-box processing-box">
-                <div className="diagram-stage-title">02&nbsp;&nbsp;多模态解析、标注与评估</div>
-                <div className="processing-visual-list">
-                  <div><i><ScanSearch size={19} /></i><span>多模态解析</span></div>
-                  <div><i><Tags size={19} /></i><span>专家标注</span></div>
-                  <div><i><BadgeCheck size={19} /></i><span>质量评估</span></div>
-                </div>
-              </section>
-
-              <div className="diagram-arrow horizontal-arrow" aria-hidden="true"><i /></div>
-
-              <section className="diagram-box storage-box">
-                <div className="diagram-stage-title">03&nbsp;&nbsp;多模态语料存储</div>
-                <div className="storage-path visual-storage-path">
-                  <div className="storage-sources">
-                    <span><Waypoints size={18} />向量表征数据</span>
-                    <span><Braces size={18} />结构化数据</span>
-                  </div>
-                  <div className="storage-mini-arrow" aria-hidden="true" />
-                  <div className="ai-database"><Database size={24} /><span>人工智能数据库</span></div>
-                  <div className="storage-mini-arrow" aria-hidden="true" />
-                  <div className="corpus-library"><LibraryBig size={18} /><strong>多模态语料库</strong></div>
-                </div>
-              </section>
-            </div>
-          </article>
+              return capability.to
+                ? <Link className={`platform-capability-card capability-${capability.key}`} to={capability.to} key={capability.key}>{content}</Link>
+                : <article className={`platform-capability-card capability-${capability.key}`} key={capability.key}>{content}</article>
+            })}
+          </div>
         </div>
       </section>
 

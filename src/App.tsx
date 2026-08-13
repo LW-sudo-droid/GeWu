@@ -8,6 +8,7 @@ import About from './pages/About'
 import DatasetDetail from './pages/DatasetDetail'
 import CorpusUpload from './pages/CorpusUpload'
 import Profile from './pages/Profile'
+import ProtectedRoute from './components/ProtectedRoute'
 
 export default function App() {
   return (
@@ -16,8 +17,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/panorama" element={<Panorama />} />
         <Route path="/search" element={<CorpusSearch pageType="search" />} />
-        <Route path="/search/results" element={<CorpusSearch pageType="results" />} />
-        <Route path="/search/datasets/:id" element={<DatasetDetail />} />
+        <Route path="/search/results" element={<ProtectedRoute><CorpusSearch pageType="results" /></ProtectedRoute>} />
+        <Route path="/search/datasets/:id" element={<ProtectedRoute><DatasetDetail /></ProtectedRoute>} />
         <Route path="/upload" element={<CorpusUpload />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/tools" element={<ToolMarket />} />

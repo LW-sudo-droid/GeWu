@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 import { ArrowLeft, Check, Eye, EyeOff, LockKeyhole, Mail, MessageSquareText, ShieldCheck, X } from 'lucide-react'
 import { useApp } from '../context/app-context'
 import LogoMark from './LogoMark'
@@ -7,7 +8,9 @@ type LoginMode = 'password' | 'sms'
 type ViewMode = 'login' | 'register'
 
 export default function AuthDialog() {
-  const { authOpen, closeAuth, signIn } = useApp()
+  const { authOpen, authReturnTo, closeAuth, signIn } = useApp()
+  const location = useLocation()
+  const navigate = useNavigate()
   const [view, setView] = useState<ViewMode>('login')
   const [loginMode, setLoginMode] = useState<LoginMode>('password')
   const [account, setAccount] = useState('')
@@ -35,7 +38,14 @@ export default function AuthDialog() {
   const closeDialog = useCallback(() => {
     resetSensitiveFields()
     closeAuth()
-  }, [closeAuth, resetSensitiveFields])
+    if (location.pathname === '/upload') {
+      navigate('/')
+      return
+    }
+    const protectedCorpusPage = location.pathname.startsWith('/search/results')
+      || location.pathname.startsWith('/search/datasets/')
+    if (protectedCorpusPage) navigate('/search')
+  }, [closeAuth, location.pathname, navigate, resetSensitiveFields])
 
   useEffect(() => {
     if (!authOpen) return
@@ -73,8 +83,10 @@ export default function AuthDialog() {
     if (loginMode === 'password' && !password) return setMessage('请输入密码')
     if (loginMode === 'sms' && smsCode.length !== 6) return setMessage('请输入6位验证码')
     if (!validateAgreement()) return
+    const nextPath = authReturnTo
     resetSensitiveFields()
     signIn({ name: account.includes('@') ? account.split('@')[0] : '科学语料用户', account })
+    if (nextPath) navigate(nextPath)
   }
 
   const submitRegister = (event: FormEvent<HTMLFormElement>) => {
@@ -85,8 +97,10 @@ export default function AuthDialog() {
     if (password !== confirmPassword) return setMessage('两次输入的密码不一致')
     if (!validateAgreement()) return
     const generatedName = username.trim() || `语料用户${Math.floor(1000 + Math.random() * 9000)}`
+    const nextPath = authReturnTo
     resetSensitiveFields()
     signIn({ name: generatedName, account })
+    if (nextPath) navigate(nextPath)
   }
 
   const requestCode = () => {

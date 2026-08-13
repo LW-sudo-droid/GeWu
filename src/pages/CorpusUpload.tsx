@@ -86,7 +86,7 @@ export default function CorpusUpload() {
   const [uploads, setUploads] = useState<Record<UploadGroupKey, UploadGroupState>>({ sample: emptyUpload(), public: emptyUpload(), all: emptyUpload() })
 
   useEffect(() => {
-    if (!user) openAuth()
+    if (!user) openAuth('/upload')
   }, [openAuth, user])
 
   const notify = (message: string) => {
@@ -148,7 +148,7 @@ export default function CorpusUpload() {
   if (!user || !verified) {
     return (
       <main className="corpus-upload-page upload-access-page">
-        <div className="upload-access-card"><ShieldCheck size={42} /><h1>上传语料库</h1><h2>{user ? '请先完成实名认证' : '请先登录平台'}</h2><p>上传和下载语料均需完成实名认证，以保障语料权属清晰、操作可追溯。</p>{user ? <Link to="/profile">前往个人主页认证</Link> : <button type="button" onClick={openAuth}>登录平台</button>}</div>
+        <div className="upload-access-card"><ShieldCheck size={42} /><h1>上传语料库</h1><h2>{user ? '请先完成实名认证' : '请先登录平台'}</h2><p>上传和下载语料均需完成实名认证，以保障语料权属清晰、操作可追溯。</p>{user ? <Link to="/profile">前往个人主页认证</Link> : <button type="button" onClick={() => openAuth('/upload')}>登录平台</button>}</div>
       </main>
     )
   }

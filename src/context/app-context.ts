@@ -12,7 +12,8 @@ export type FavoriteCorpus = {
 
 export type AppContextValue = {
   authOpen: boolean
-  openAuth: () => void
+  authReturnTo: string | null
+  openAuth: (returnTo?: string) => void
   closeAuth: () => void
   user: DemoUser | null
   favorites: FavoriteCorpus[]
