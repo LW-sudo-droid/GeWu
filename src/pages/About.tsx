@@ -17,40 +17,42 @@ const philosophyNodes = [
   { key: 'iteration', title: '持续迭代', text: '推动数据、工具、人才和模型协同演化，通过建设与使用反馈不断提升语料质量', keywords: '协同演化 · 持续更新' },
 ]
 
+const logo = (name: string) => `${import.meta.env.BASE_URL}images/partners/${name}`
+
 const ecosystemGroups: Record<EcosystemKey, { icon: typeof GraduationCap; summary: string; members: EcosystemMember[] }> = {
   高校: {
     icon: GraduationCap,
     summary: '提供学科体系、专业人才与高质量学科语料',
     members: [
-      { name: '北京大学', logo: '/images/partners/pku.svg' },
-      { name: '清华大学', logo: '/images/partners/tsinghua.webp' },
-      { name: '厦门大学', logo: '/images/partners/xiamen.jpg' },
-      { name: '南京大学', logo: '/images/partners/nanjing.webp' },
-      { name: '武汉大学', logo: '/images/partners/wuhan.webp' },
-      { name: '复旦大学', logo: '/images/partners/fudan.png' },
-      { name: '上海交通大学', logo: '/images/partners/sjtu.jpg' },
+      { name: '北京大学', logo: logo('pku.svg') },
+      { name: '清华大学', logo: logo('tsinghua.webp') },
+      { name: '厦门大学', logo: logo('xiamen.jpg') },
+      { name: '南京大学', logo: logo('nanjing.webp') },
+      { name: '武汉大学', logo: logo('wuhan.webp') },
+      { name: '复旦大学', logo: logo('fudan.png') },
+      { name: '上海交通大学', logo: logo('sjtu.jpg') },
     ],
   },
   科研机构: {
     icon: Microscope,
     summary: '汇聚科研数据、实验资源与前沿科学成果',
     members: [
-      { name: '北京科学智能研究院', logo: '/images/partners/aisi.ico' },
-      { name: '鹏城实验室', logo: '/images/partners/pengcheng.jpeg' },
+      { name: '北京科学智能研究院', logo: logo('aisi.ico') },
+      { name: '鹏城实验室', logo: logo('pengcheng.jpeg') },
     ],
   },
   企业: {
     icon: Building2,
     summary: '提供技术工具、数据资源与应用场景',
     members: [
-      { name: '华为', logo: '/images/partners/huawei.jpeg' },
-      { name: '万方数据', logo: '/images/partners/wanfang.jpeg' },
-      { name: '深势科技', logo: '/images/partners/dptech.jpg' },
-      { name: '京能集团', logo: '/images/partners/jingneng.jpg' },
-      { name: '百度', logo: '/images/partners/baidu.jpeg' },
-      { name: '字节跳动', logo: '/images/partners/bytedance.jpeg' },
-      { name: '中国联通', logo: '/images/partners/unicom.jpeg' },
-      { name: '蚂蚁集团', logo: '/images/partners/ant.jpg' },
+      { name: '华为', logo: logo('huawei.jpeg') },
+      { name: '万方数据', logo: logo('wanfang.jpeg') },
+      { name: '深势科技', logo: logo('dptech.jpg') },
+      { name: '京能集团', logo: logo('jingneng.jpg') },
+      { name: '百度', logo: logo('baidu.jpeg') },
+      { name: '字节跳动', logo: logo('bytedance.jpeg') },
+      { name: '中国联通', logo: logo('unicom.jpeg') },
+      { name: '蚂蚁集团', logo: logo('ant.jpg') },
     ],
   },
   个人: {
